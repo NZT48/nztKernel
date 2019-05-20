@@ -22,7 +22,7 @@ public:
 };
 
 PCB *p[3];
-volatile PCB* running; 
+volatile PCB* running;
 
 volatile int nextThread = 2;
 PCB* getNextPCBToExecute(){
@@ -51,7 +51,7 @@ volatile int brojac = 20;
 volatile int zahtevana_promena_konteksta = 0;
 
 void interrupt timer(){	// prekidna rutina
-	if (!zahtevana_promena_konteksta) brojac--; 
+	if (!zahtevana_promena_konteksta) brojac--;
 	if (brojac == 0 || zahtevana_promena_konteksta) {
 		if(lockFlag == 1){
 			zahtevana_promena_konteksta = 0;
@@ -83,19 +83,19 @@ void interrupt timer(){	// prekidna rutina
 				mov bp, tbp
 			}
 		}else zahtevana_promena_konteksta = 1;
-	} 
-    
-	// poziv stare prekidne rutine koja se 
+	}
+
+	// poziv stare prekidne rutine koja se
      // nalazila na 08h, a sad je na 60h
      // poziva se samo kada nije zahtevana promena
      // konteksta – tako se da se stara
-     // rutina poziva samo kada je stvarno doslo do prekida	
+     // rutina poziva samo kada je stvarno doslo do prekida
 if(!zahtevana_promena_konteksta) asm int 60h;
-		                                              
+
 	//zahtevana_promena_konteksta = 0;
 }
 
-void dispatch(){ // sinhrona promena konteksta 
+void dispatch(){ // sinhrona promena konteksta
 	asm cli;
 	zahtevana_promena_konteksta = 1;
 	timer();
@@ -115,14 +115,14 @@ void inic(){
 		mov es,ax
 
 		mov ax, word ptr es:0022h //; pamti staru rutinu
-		mov word ptr oldTimerSEG, ax	
-		mov ax, word ptr es:0020h	
-		mov word ptr oldTimerOFF, ax	
+		mov word ptr oldTimerSEG, ax
+		mov ax, word ptr es:0020h
+		mov word ptr oldTimerOFF, ax
 
-		mov word ptr es:0022h, seg timer	 //postavlja 
+		mov word ptr es:0022h, seg timer	 //postavlja
 		mov word ptr es:0020h, offset timer //novu rutinu
 
-		mov ax, oldTimerSEG	 //	postavlja staru rutinu	
+		mov ax, oldTimerSEG	 //	postavlja staru rutinu
 		mov word ptr es:0182h, ax //; na int 60h
 		mov ax, oldTimerOFF
 		mov word ptr es:0180h, ax
@@ -158,7 +158,7 @@ void restore(){
 void exitThread(){
 	running->zavrsio = 1;
 	dispatch();
-}  
+}
 #ifndef BCC_BLOCK_IGNORE
 void a(){
 	for (int i =0; i < 30; ++i) {
@@ -197,8 +197,8 @@ void createProcess(PCB *newPCB, void (*body)()){
 	st1[1022] = FP_SEG(body);
 	st1[1021] = FP_OFF(body);
 
-newPCB->sp = FP_OFF(st1+1012); //svi sacuvani registri 
- //pri ulasku u interrupt 
+	newPCB->sp = FP_OFF(st1+1012); //svi sacuvani registri
+ //pri ulasku u interrupt
  //rutinu
 	newPCB->ss = FP_SEG(st1+1012);
 	newPCB->bp = FP_OFF(st1+1012);
@@ -242,14 +242,13 @@ void doSomething(){
 }
 
 int main(){
-	
+
   inic();
 
   doSomething();
-  
+
   restore();
- 
+
   return 0;
 }
 //#endif
-

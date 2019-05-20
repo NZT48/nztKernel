@@ -1,8 +1,9 @@
-#ifndef _thread_h_
-#define _thread_h_
+#ifndef _THREAD_H_
+#define _THREAD_H_
 
 typedef unsigned long StackSize;
 const StackSize defaultStackSize = 4096;
+const StackSize maxStackSize = 1UL << 16;
 typedef unsigned int Time; //time, x55ms
 const Time defaultTimeSlice = 2;
 typedef int ID;

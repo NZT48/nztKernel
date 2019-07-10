@@ -3,16 +3,18 @@
 
 #include "thread.h"
 
-class PCB{
+class Thread;
+
+class PCB {
 public:
-    
-    enum State { NEW, READY, BLOCKED, PAUSED, TERMINATED };
 
+    enum State { NEW, READY, BLOCKED, RUNNING, FINISHED };
 
-    
-    void start();
-    void join();
-    virtual ~PCB();
+    PCB (Thread *thread, StackSize stackSize, Time timeSlice);
+    ~PCB();
+
+    void reschedule();
+    void waitToComplete();
 
     ID getID();
     static ID getRunningId();
@@ -20,10 +22,19 @@ public:
 
 protected:
 
-    PCB (Thread *thread, StackSize stackSize, Time timeSlice);
 
 private:
+
     ID myID;
+    Time remaining, timeSlice;
+    State state;
+
+    unsigned* stack; ///moze i unsigned int
+    StackSize stackSize_;
+
+    Thread* myThread;
+
+    //friend class Thread;
 
     unsigned bp;
 	unsigned sp;

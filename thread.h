@@ -3,7 +3,7 @@
 
 typedef unsigned long StackSize;
 const StackSize defaultStackSize = 4096;
-//const StackSize maxStackSize = 1UL << 16;
+const StackSize maxStackSize = 1UL << 16;
 typedef unsigned int Time; //time, x55ms
 const Time defaultTimeSlice = 2;
 typedef int ID;

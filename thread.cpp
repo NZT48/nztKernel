@@ -16,21 +16,27 @@ Thread::~Thread(){
 }
 
 void Thread::start(){
-    myPCB->start();
+    myPCB->reschedule(); //start
 }
 
 void Thread::waitToComplete(){
-    myPCB->join();
+    myPCB->waitToComplete(); //join
 }
 
 ID Thread::getID() {
     return myPCB->getID();
 }
 
-
 ID Thread::getRunningId(){
     return PCB::running->getID();
 }
 Thread *Thread::getThreadById(ID id){
     return PCB::getThreadById(id);
+}
+
+void dispatch(){
+    HARD_LOCK
+    Timer::req = 1;
+    Timer::timerInt();
+    HARD_UNLOCK
 }

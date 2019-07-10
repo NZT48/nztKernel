@@ -8,7 +8,7 @@ typedef int ID;
 
 
 //PCBh
-typedef unsigned int  Register;
+typedef unsigned int  Reg;
 //extern volatile PCB* running;
 
 //Timerh

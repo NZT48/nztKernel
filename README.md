@@ -1,2 +1,2 @@
 # MiniKernel
-Projekat iz Operativnih sistema 1
+## Projekat iz Operativnih sistema 1

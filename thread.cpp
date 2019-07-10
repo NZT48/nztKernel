@@ -31,7 +31,7 @@ ID Thread::getRunningId(){
     return PCB::running->getID();
 }
 Thread *Thread::getThreadById(ID id){
-    return PCB::getThreadById(id); //func vraca pok na PCB, mozda problem?
+    return PCB::getThreadById(id); //func returns pointer to PCB, probably problem?
 }
 
 void dispatch(){

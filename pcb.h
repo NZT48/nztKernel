@@ -30,16 +30,19 @@ private:
     Time remaining, timeSlice;
     State state;
 
-    unsigned* stack; ///moze i unsigned int
+    unsigned* stack; ///or unsigned int
     StackSize stackSize_;
 
     Thread* myThread;
 
+    //for semaphor
+    int wakeSignal;
+
     //friend class Thread;
 
-    unsigned bp;
-	unsigned sp;
-	unsigned ss;
+    Reg bp;
+	Reg sp;
+	Reg ss;
 
 };
 

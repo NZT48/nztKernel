@@ -2,6 +2,7 @@
 #define _PCB_H_
 
 #include "thread.h"
+#include "defin.h"
 
 class Thread;
 

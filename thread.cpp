@@ -1,5 +1,5 @@
 #include "thread.h"
-#include "locks.h"
+#include "defin.h"
 
 Thread::Thread(StackSize stackSize = defaultStackSize, Time timeSlice = defaultTimeSlice){
     if(stackSize > maxStackSize) stackSize = maxStackSize;
@@ -31,7 +31,7 @@ ID Thread::getRunningId(){
     return PCB::running->getID();
 }
 Thread *Thread::getThreadById(ID id){
-    return PCB::getThreadById(id);
+    return PCB::getThreadById(id); //func vraca pok na PCB, mozda problem?
 }
 
 void dispatch(){

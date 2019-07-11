@@ -19,7 +19,13 @@ public:
 
     ID getID();
     static ID getRunningId();
-    static PCB *getThreadById(ID id);
+    static Thread *getThreadById(ID id);
+
+    Thread* getThread() { return myThread; }
+
+    static PCB* runningPCB; //or in Timerh
+    static PCB* idlePCB;
+    static PCBList* pcbList;
 
 protected:
 

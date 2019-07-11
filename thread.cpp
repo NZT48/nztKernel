@@ -1,9 +1,9 @@
 #include "thread.h"
 #include "defin.h"
-#include "pcb.h"
 #include "timer.h"
+#include "pcb.h"
 
-Thread::Thread(StackSize stackSize, Time timeSlice ){
+Thread::Thread(StackSize stackSize, Time timeSlice){
     if(stackSize > maxStackSize) stackSize = maxStackSize;
     HARD_LOCK
     myPCB = new PCB(this, stackSize, timeSlice);

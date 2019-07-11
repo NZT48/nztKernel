@@ -20,15 +20,13 @@ public:
     PCB* head() const { return front->pcb; }
     PCB* tail() const { return back->pcb; }
 
-    PCB* front() const { return front; }
-
-
-    unsigned int empty() { !front ? 0 : 1; }
+    unsigned int empty() { return !front ? 0 : 1; }
 
     void put(PCB* pcb);
     PCB* get();
 
     //void rescheduleAll();
+
 
     Node* front;
     Node* back;

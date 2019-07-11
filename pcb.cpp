@@ -79,7 +79,7 @@ ID PCB::getRunningId(){
 }
 
 Thread *PCB::getThreadById(ID id){
-    PCBList::Node* ret = PCBList::front;
+    PCBList::Node* ret = pcbList->front;
     while( ret != 0 && ret->pcb->getID() != id){
         ret = ret->next;
     }

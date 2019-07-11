@@ -1,6 +1,9 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
+typedef void interrupt (*InterruptRoutine)(...);
+
+
 class Timer {
 public:
     static void interrupt timerInt(...);
@@ -9,8 +12,7 @@ public:
 
     static int volatile req;
 
-private:
-    static void interrupt (*oldTimerInt)(...);
+    static InterruptRoutine oldTimerInt;
     //static const int IVTE;
 };
 

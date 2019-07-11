@@ -1,10 +1,12 @@
 #include "timer.h"
 #include "pcb.h"
+#include "scheduler.h"
 
 #include <dos.h>
 #include <stdlib.h>
 
 int volatile Timer::req = 0;
+InterruptRoutine Timer::oldTimerInt = 0;
 
 static Reg volatile tsp, tss, tbp;
 
@@ -29,14 +31,14 @@ void interrupt Timer::timerInt(...) {
         oldTimerInt();
         tick();
 
-        if(runingPCB->remaining > 0){
-            runningPCB->remaining--;
+        if(PCB::runningPCB->remaining > 0){
+            PCB::runningPCB->remaining--;
             /*if(runningPCB->remaining == 0 && runningPCB->timeSlice != 0)
                 runningPCB->remaining = 1;*/
         }
     }
 
-    if(req || (runningPCB->timeSlice != 0 && runningPCB->remaining == 0)){
+    if(req || (PCB::runningPCB->timeSlice != 0 && PCB::runningPCB->remaining == 0)){
 
         //save
         asm {
@@ -45,24 +47,24 @@ void interrupt Timer::timerInt(...) {
                 mov tbp, bp;
         }
 
-        runningPCB->ss = tss;
-        runningPCB->sp = tsp;
-        runningPCB->bp = tbp;
+        PCB::runningPCB->ss = tss;
+        PCB::runningPCB->sp = tsp;
+        PCB::runningPCB->bp = tbp;
 
         //change
-        if(runningPCB->state == PCB::RUNNING){//&& runningPCB != idlePCB or MainPCB){
-            runningPCB->state = PCB:READY;
-            Scheduler::put(runningPCB);
+        if(PCB::runningPCB->state == PCB::RUNNING){//&& runningPCB != idlePCB or MainPCB){
+        	PCB::runningPCB->state = PCB::READY;
+            Scheduler::put(PCB::runningPCB);
         }
 
-        runningPCB = Scheduler::get();
-        runningPCB->state = PCB::RUNNING;
-        runingPCB->remaining = runningPCB->timeSlice;
+        PCB::runningPCB = Scheduler::get();
+        PCB::runningPCB->state = PCB::RUNNING;
+        PCB::runningPCB->remaining = PCB::runningPCB->timeSlice;
 
         //restore
-        tss = runningPCB->ss;
-        tsp = runningPCB->sp;
-        tbp = runningPCB->bp;
+        tss = PCB::runningPCB->ss;
+        tsp = PCB::runningPCB->sp;
+        tbp = PCB::runningPCB->bp;
 
         asm {
             mov ss, tss;

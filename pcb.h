@@ -6,13 +6,13 @@
 #include "pcblist.h"
 
 class Thread;
-
+class PCBList;
 class PCB {
 public:
 
     enum State { NEW, READY, BLOCKED, RUNNING, FINISHED };
 
-    PCB(); //for mainPCB
+    PCB();
     PCB (Thread *thread, StackSize stackSize, Time timeSlice);
     ~PCB();
 
@@ -27,15 +27,11 @@ public:
 
     Thread* getThread() { return myThread; }
 
-    static PCB* runningPCB; //or in Timerh
+    static PCB* runningPCB;
     static PCB* idlePCB;
     static PCBList* pcbList;
     static ID lastId;
 
-protected:
-
-
-private:
 
     ID myID;
     Time remaining, timeSlice;

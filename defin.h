@@ -2,9 +2,7 @@
 #define _DEFIN_H_
 
 //From threadh
-typedef unsigned long StackSize;
-typedef unsigned int Time; //time, x55ms
-typedef int ID;
+
 
 
 //PCBh

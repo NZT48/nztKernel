@@ -2,6 +2,8 @@
 #include "thread.h"
 #include "mainTh.h"
 #include <iostream.h>
+#include "pcb.h"
+
 
 PCB *mainPCB;
 

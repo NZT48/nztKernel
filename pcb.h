@@ -17,6 +17,8 @@ public:
     void reschedule();
     void waitToComplete();
 
+    static void threadWrapper();
+
     ID getID();
     static ID getRunningId();
     static Thread *getThreadById(ID id);
@@ -26,6 +28,7 @@ public:
     static PCB* runningPCB; //or in Timerh
     static PCB* idlePCB;
     static PCBList* pcbList;
+    static ID lastId;
 
 protected:
 
@@ -37,7 +40,7 @@ private:
     State state;
 
     unsigned* stack; ///or unsigned int
-    StackSize stackSize_;
+    StackSize stackSize;
 
     Thread* myThread;
 

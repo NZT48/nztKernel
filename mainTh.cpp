@@ -5,7 +5,7 @@
 extern int userMain(int, char*[]);
 extern PCB *mainPCB;
 
-MaintThread::MainThread(int argc_, char *argv_[]): Thread(4096,0) {
+MainThread::MainThread(int argc_, char *argv_[]): Thread(4096,0) {
     argc = argc_;
     argv = argv_;
 }

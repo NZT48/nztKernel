@@ -11,7 +11,7 @@ public:
     struct Node {
         PCB* pcb;
         Node* next;
-        Node(PCB* pcb, Node* next = NULL) : pcb(pcb), next(next) {}
+        Node(PCB* pcb, Node* next = 0) : pcb(pcb), next(next) {}
     };
 
     PCBList();
@@ -20,14 +20,15 @@ public:
     PCB* head() const { return front->pcb; }
     PCB* tail() const { return back->pcb; }
 
+    PCB* front() const { return front; }
+
+
     unsigned int empty() { !front ? 0 : 1; }
 
     void put(PCB* pcb);
     PCB* get();
 
     //void rescheduleAll();
-
-private:
 
     Node* front;
     Node* back;

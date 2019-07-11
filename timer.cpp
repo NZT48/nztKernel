@@ -19,12 +19,12 @@ void Timer::inic() {
 
 void Timer::restore() {
     HARD_LOCK
-    setvect(0x08, odlTimerInt);
+    setvect(0x08, oldTimerInt);
     HARD_UNLOCK
 }
 
 
-void interrupt Timer::timerInt() {
+void interrupt Timer::timerInt(...) {
     if(!req){
         oldTimerInt();
         tick();

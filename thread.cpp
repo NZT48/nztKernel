@@ -1,7 +1,9 @@
 #include "thread.h"
 #include "defin.h"
+#include "pcb.h"
+#include "timer.h"
 
-Thread::Thread(StackSize stackSize = defaultStackSize, Time timeSlice = defaultTimeSlice){
+Thread::Thread(StackSize stackSize, Time timeSlice ){
     if(stackSize > maxStackSize) stackSize = maxStackSize;
     HARD_LOCK
     myPCB = new PCB(this, stackSize, timeSlice);
@@ -28,7 +30,7 @@ ID Thread::getID() {
 }
 
 ID Thread::getRunningId(){
-    return PCB::running->getID();
+    return PCB::runningPCB->getID();
 }
 Thread *Thread::getThreadById(ID id){
     return PCB::getThreadById(id); //func returns pointer to PCB, probably problem?

@@ -3,6 +3,7 @@
 
 #include "thread.h"
 #include "defin.h"
+#include "pcblist.h"
 
 class Thread;
 

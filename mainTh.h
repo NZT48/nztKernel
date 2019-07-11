@@ -1,13 +1,15 @@
 #ifndef _MAINTH_H_
 #define _MAINTH_H_
 
+#include "thread.h"
+
 class MainThread : public Thread {
-public:
+private:
     int argc;
     char **argv;
 
-private:
-    MaintThread(int argc_, char **argv_);
+public:
+    MainThread(int argc_, char **argv_);
     ~MainThread();
     void run();
 

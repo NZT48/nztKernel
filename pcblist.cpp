@@ -18,7 +18,7 @@ PCBList::~PCBList(){
 
 void PCBList::put(PCB* pcb){
     HARD_LOCK
-        Node* nd = new Node(pcb);
+        Node* node = new Node(pcb);
     HARD_UNLOCK
 
     if(front){

@@ -9,7 +9,7 @@ int main(int argc, char* argv[]){
 
     mainPCB = new PCB();
     PCB::runningPCB = mainPCB;
-    MaintThread *mainThread = new MainThread(argc, argv);
+    MainThread *mainThread = new MainThread(argc, argv);
     mainThread->start();
     Timer::inic();
     dispatch();

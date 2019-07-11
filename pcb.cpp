@@ -1,6 +1,7 @@
 #include <dos.h>
 
 #include "pcb.h"
+#include "pcblist.h"
 #include "SCHEDULE.H"
 
 PCB* PCB::runningPCB = 0;
@@ -21,9 +22,9 @@ PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
     stack = new unsigned int[stackSize];
 
     stack[stackSize - 1] = 0x200; //PSWI = 1
-    stack[stack_size - 2] = FP_SEG(PCB::wrapper);
-    stack[stack_size - 3] = FP_OFF(PCB::wrapper);
-    stack[stack_size - 12] = 0; //check it!
+    stack[stackSize - 2] = FP_SEG(PCB::threadWrapper);
+    stack[stackSize - 3] = FP_OFF(PCB::threadWrapper);
+    stack[stackSize - 12] = 0; //check it!
 
     ss = FP_SEG(stack + stackSize - 12);
     sp = FP_OFF(stack + stackSize - 12);
@@ -73,12 +74,12 @@ ID PCB::getID(){
     return myID;
 }
 
-static ID PCB::getRunningId(){
+ID PCB::getRunningId(){
     return runningPCB->getID();
 }
 
-static Thread *PCB::getThreadById(ID id){
-    PCBList::Node* ret = pcbList->head();
+Thread *PCB::getThreadById(ID id){
+    PCBList::Node* ret = PCBList::front;
     while( ret != 0 && ret->pcb->getID() != id){
         ret = ret->next;
     }

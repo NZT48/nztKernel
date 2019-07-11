@@ -12,7 +12,7 @@ public:
 private:
     static void interrupt (*oldTimerInt)(...);
     //static const int IVTE;
-}
+};
 
 void tick();
 

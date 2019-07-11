@@ -8,6 +8,10 @@ PCB* PCB::idlePCB = 0;
 PCBList* PCB::pcbList = new PCBList();
 ID PCB::lastId = 0;
 
+PCB::PCB(){
+    timeSlice = remaining = 20;
+}
+
 PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
 
     myID = ++lastId;

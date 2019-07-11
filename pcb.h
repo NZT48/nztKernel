@@ -11,6 +11,7 @@ public:
 
     enum State { NEW, READY, BLOCKED, RUNNING, FINISHED };
 
+    PCB(); //for mainPCB
     PCB (Thread *thread, StackSize stackSize, Time timeSlice);
     ~PCB();
 

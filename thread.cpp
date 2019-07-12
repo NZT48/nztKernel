@@ -18,11 +18,11 @@ Thread::~Thread(){
 }
 
 void Thread::start(){
-    myPCB->reschedule(); //start
+    myPCB->reschedule();
 }
 
 void Thread::waitToComplete(){
-    myPCB->waitToComplete(); //join
+    myPCB->waitToComplete();
 }
 
 ID Thread::getID() {
@@ -33,7 +33,7 @@ ID Thread::getRunningId(){
     return PCB::runningPCB->getID();
 }
 Thread *Thread::getThreadById(ID id){
-    return PCB::getThreadById(id); //func returns pointer to PCB, probably problem?
+    return PCB::getThreadById(id);
 }
 
 void dispatch(){

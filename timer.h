@@ -13,7 +13,6 @@ public:
     static int volatile req;
 
     static InterruptRoutine oldTimerInt;
-    //static const int IVTE;
 };
 
 void tick();

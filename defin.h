@@ -1,13 +1,8 @@
 #ifndef _DEFIN_H_
 #define _DEFIN_H_
 
-//From threadh
-
-
-
 //PCBh
 typedef unsigned int  Reg;
-//extern volatile PCB* running;
 
 //Timerh
 typedef int IVTNo;

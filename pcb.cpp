@@ -85,7 +85,7 @@ Thread *PCB::getThreadById(ID id){
     }
 
     if(ret)
-        return ret->pcb->getThread();
+        return ret->pcb->myThread;
     else
         return 0;
 }

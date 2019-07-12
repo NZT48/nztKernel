@@ -5,6 +5,7 @@ typedef void interrupt (*InterruptRoutine)(...);
 
 
 class Timer {
+
 public:
     static void interrupt timerInt(...);
     static void inic();
@@ -12,6 +13,7 @@ public:
 
     static int volatile req;
 
+private:
     static InterruptRoutine oldTimerInt;
 };
 

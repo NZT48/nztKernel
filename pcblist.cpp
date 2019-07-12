@@ -46,6 +46,3 @@ PCB* PCBList::get(){
 
 	return ret;
 }
-
-
-//void PCBList::rescheduleAll(){}

@@ -7,6 +7,7 @@
 
 class Thread;
 class PCBList;
+
 class PCB {
 public:
 
@@ -25,13 +26,10 @@ public:
     static ID getRunningId();
     static Thread *getThreadById(ID id);
 
-    Thread* getThread() { return myThread; }
-
     static PCB* runningPCB;
     static PCB* idlePCB;
     static PCBList* pcbList;
     static ID lastId;
-
 
     ID myID;
     Time remaining, timeSlice;
@@ -44,8 +42,6 @@ public:
 
     //for semaphor
     int wakeSignal;
-
-    //friend class Thread;
 
     Reg bp;
 	Reg sp;

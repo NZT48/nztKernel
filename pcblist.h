@@ -25,9 +25,6 @@ public:
     void put(PCB* pcb);
     PCB* get();
 
-    //void rescheduleAll();
-
-
     Node* front;
     Node* back;
 

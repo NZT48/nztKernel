@@ -52,7 +52,7 @@ void interrupt Timer::timerInt(...) {
         PCB::runningPCB->bp = tbp;
 
         //change
-        if(PCB::runningPCB->state == PCB::RUNNING){//&& runningPCB != idlePCB or MainPCB){
+        if(PCB::runningPCB->state == PCB::RUNNING){ //&& runningPCB != idlePCB or MainPCB)
         	PCB::runningPCB->state = PCB::READY;
             Scheduler::put(PCB::runningPCB);
         }
@@ -72,7 +72,6 @@ void interrupt Timer::timerInt(...) {
             mov bp, tbp;
         }
 
-        //reset request indicator
         req = 0;
     }
 }

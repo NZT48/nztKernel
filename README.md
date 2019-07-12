@@ -1,6 +1,6 @@
 # MiniKernel
 ## Projekat iz Operativnih sistema 1
-
+```
 .
 ├── h                       # headers (.h files)
 │   ├── thread.h             #
@@ -22,3 +22,4 @@
 ├── lib                     # libraries
 │   └── applicat.lib         # 
 └── ...
+```

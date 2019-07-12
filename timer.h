@@ -11,10 +11,15 @@ public:
     static void inic();
     static void restore();
 
+    static PCB* mainPCB;
+    static PCB* idlePCB;
+    static PCB* runningPCB;
+
     static int volatile req;
 
 private:
     static InterruptRoutine oldTimerInt;
+    
 };
 
 void tick();

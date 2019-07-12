@@ -26,8 +26,6 @@ public:
     static ID getRunningId();
     static Thread *getThreadById(ID id);
 
-    static PCB* runningPCB;
-    static PCB* idlePCB;
     static PCBList* pcbList;
     static ID lastId;
 

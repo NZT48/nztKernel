@@ -3,9 +3,8 @@
 #include "pcb.h"
 #include "pcblist.h"
 #include "SCHEDULE.H"
+#include "timer.h"
 
-PCB* PCB::runningPCB = 0;
-PCB* PCB::idlePCB = 0;
 PCBList* PCB::pcbList = new PCBList();
 ID PCB::lastId = 0;
 
@@ -52,20 +51,20 @@ void PCB::reschedule(){
 
 void PCB::waitToComplete(){
 
-    if(this == PCB::runningPCB || this->state == FINISHED ||
-        this == PCB::idlePCB || this->state == NEW) return;
+    if(this == Timer::runningPCB || this->state == FINISHED ||
+        this == Timer::idlePCB || this->state == NEW) return;
 
     HARD_LOCK
-    PCB::runningPCB->state = BLOCKED;
-    pcbList->put(PCB::runningPCB);
+    Timer::runningPCB->state = BLOCKED;
+    pcbList->put(Timer::runningPCB);
     HARD_UNLOCK
     dispatch();
 }
 
 void PCB::threadWrapper() {
-    PCB::runningPCB->myThread->run();
+    Timer::runningPCB->myThread->run();
 
-    PCB::runningPCB->state = FINISHED;
+    Timer::runningPCB->state = FINISHED;
     dispatch();
 }
 
@@ -75,7 +74,7 @@ ID PCB::getID(){
 }
 
 ID PCB::getRunningId(){
-    return runningPCB->getID();
+    return Timer::runningPCB->getID();
 }
 
 Thread *PCB::getThreadById(ID id){

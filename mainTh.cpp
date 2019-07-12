@@ -16,5 +16,5 @@ MainThread::~MainThread() {
 
 void MainThread::run(){
     userMain(argc,argv);
-    Scheduler::put(mainPCB);
+    Scheduler::put(Timer::mainPCB);
 }

@@ -30,8 +30,9 @@ ID Thread::getID() {
 }
 
 ID Thread::getRunningId(){
-    return PCB::runningPCB->getID();
+    return Timer::runningPCB->getID();
 }
+
 Thread *Thread::getThreadById(ID id){
     return PCB::getThreadById(id);
 }

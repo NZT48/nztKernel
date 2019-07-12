@@ -8,6 +8,10 @@
 int volatile Timer::req = 0;
 InterruptRoutine Timer::oldTimerInt = 0;
 
+PCB* Timer::idlePCB = 0;
+PCB* Timer::mainPCB = 0;
+PCB* Timer::runningPCB = 0;
+
 static Reg volatile tsp, tss, tbp;
 
 
@@ -31,14 +35,14 @@ void interrupt Timer::timerInt(...) {
         oldTimerInt();
         tick();
 
-        if(PCB::runningPCB->remaining > 0){
-            PCB::runningPCB->remaining--;
+        if(runningPCB->remaining > 0){
+            runningPCB->remaining--;
             /*if(runningPCB->remaining == 0 && runningPCB->timeSlice != 0)
                 runningPCB->remaining = 1;*/
         }
     }
 
-    if(req || (PCB::runningPCB->timeSlice != 0 && PCB::runningPCB->remaining == 0)){
+    if(req || (runningPCB->timeSlice != 0 && runningPCB->remaining == 0)){
 
         //save
         asm {
@@ -47,24 +51,24 @@ void interrupt Timer::timerInt(...) {
                 mov tbp, bp;
         }
 
-        PCB::runningPCB->ss = tss;
-        PCB::runningPCB->sp = tsp;
-        PCB::runningPCB->bp = tbp;
+        runningPCB->ss = tss;
+        runningPCB->sp = tsp;
+        runningPCB->bp = tbp;
 
         //change
-        if(PCB::runningPCB->state == PCB::RUNNING){ //&& runningPCB != idlePCB or MainPCB)
-        	PCB::runningPCB->state = PCB::READY;
-            Scheduler::put(PCB::runningPCB);
+        if(runningPCB->state == PCB::RUNNING){ //&& runningPCB != idlePCB or MainPCB)
+        	runningPCB->state = PCB::READY;
+            Scheduler::put(runningPCB);
         }
 
-        PCB::runningPCB = Scheduler::get();
-        PCB::runningPCB->state = PCB::RUNNING;
-        PCB::runningPCB->remaining = PCB::runningPCB->timeSlice;
+        runningPCB = Scheduler::get();
+        runningPCB->state = PCB::RUNNING;
+        runningPCB->remaining = runningPCB->timeSlice;
 
         //restore
-        tss = PCB::runningPCB->ss;
-        tsp = PCB::runningPCB->sp;
-        tbp = PCB::runningPCB->bp;
+        tss = runningPCB->ss;
+        tsp = runningPCB->sp;
+        tbp = runningPCB->bp;
 
         asm {
             mov ss, tss;

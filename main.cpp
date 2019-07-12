@@ -4,13 +4,10 @@
 #include <iostream.h>
 #include "pcb.h"
 
-
-PCB *mainPCB;
-
 int main(int argc, char* argv[]){
 
-    mainPCB = new PCB();
-    PCB::runningPCB = mainPCB;
+    Timer::mainPCB = new PCB();
+    Timer::runningPCB = Timer::mainPCB;
 
     MainThread *mainThread = new MainThread(argc, argv);
     mainThread->start();

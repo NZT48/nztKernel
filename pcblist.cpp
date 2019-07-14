@@ -15,6 +15,10 @@ PCBList::~PCBList(){
     HARD_UNLOCK
 }
 
+void PCBList::release(){
+		for(PCB* tmp; tmp = get(); tmp->reschedule());
+}
+
 
 void PCBList::put(PCB* pcb){
     HARD_LOCK

@@ -1,6 +1,6 @@
 # MiniKernel
 ## Projekat iz Operativnih sistema 1
-
+```
 .
 ├── h                       # headers (.h files)
 │   ├── thread.h             #
@@ -20,5 +20,6 @@
 │   └── main.cpp             #
 ├── tests                   # Test for each phase
 ├── lib                     # libraries
-│   └── applicat.lib         # 
+│   └── applicat.lib         #
 └── ...
+```

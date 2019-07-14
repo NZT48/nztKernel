@@ -16,6 +16,7 @@ PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
 
     myID = ++lastId;
     myThread = thread;
+    blockedPCB = new PCBList();
 
     this->stackSize = stackSize / sizeof(unsigned);
     stack = new unsigned int[stackSize];
@@ -35,10 +36,12 @@ PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
     remaining = timeSlice;
     state = NEW;
     wakeSignal = 0; //can also be 1
+    pcbList->put(this);
 
 }
 
 PCB::~PCB(){
+    blockedPCB->release();
     if(stack) delete[] stack;
 }
 
@@ -51,12 +54,13 @@ void PCB::reschedule(){
 
 void PCB::waitToComplete(){
 
-    if(this == Timer::runningPCB || this->state == FINISHED ||
-        this == Timer::idlePCB || this->state == NEW) return;
+    if(this == Timer::runningPCB || this->state == FINISHED
+        || this == Timer::idlePCB || this->state == NEW) return;
 
     HARD_LOCK
+    //cout << endl << Timer::runningPCB->getID() << " is waitin for " << getID() << endl;
     Timer::runningPCB->state = BLOCKED;
-    pcbList->put(Timer::runningPCB);
+    blockedPCB->put(Timer::runningPCB);
     HARD_UNLOCK
     dispatch();
 }
@@ -64,6 +68,7 @@ void PCB::waitToComplete(){
 void PCB::threadWrapper() {
     Timer::runningPCB->myThread->run();
 
+    Timer::runningPCB->blockedPCB->release();
     Timer::runningPCB->state = FINISHED;
     dispatch();
 }

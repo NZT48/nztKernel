@@ -37,6 +37,7 @@ public:
     StackSize stackSize;
 
     Thread* myThread;
+    PCBList blockedPCB;
 
     //for semaphor
     int wakeSignal;

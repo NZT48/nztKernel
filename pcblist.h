@@ -21,6 +21,7 @@ public:
     PCB* tail() const { return back->pcb; }
 
     unsigned int empty() { return !front ? 0 : 1; }
+    void release();
 
     void put(PCB* pcb);
     PCB* get();

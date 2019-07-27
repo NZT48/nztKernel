@@ -3,6 +3,8 @@
 
 //PCBh
 typedef unsigned int Reg;
+extern unsigned volatile lock;
+
 
 //Timerh
 typedef int IVTNo;
@@ -12,5 +14,9 @@ typedef int IVTNo;
         asm cli;
 
 #define HARD_UNLOCK asm popf;
+
+#define LOCK      ++lock
+#define UNLOCK    /*if (--lock == 0 && Timer::lockTimedOut) {  dispatch(); }*/ --lock;
+#define LOCKED(s) LOCK; s UNLOCK
 
 #endif

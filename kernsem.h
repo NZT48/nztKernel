@@ -2,13 +2,14 @@
 #define _kernsem_h_
 
 #include "defin.h"
-#include "semaphore.h"
+#include "semaphor.h"
 #include "pcb.h"
+#include "pcblist.h"
 
 class KernelSem {
 
 public:
-    KernelSem(int init) : value(init) {};
+    KernelSem(int init) : value(init) { blocked = new PCBList(); }
     ~KernelSem();
 
     int wait(Time maxTimeToWait);
@@ -21,6 +22,8 @@ public:
 
 private:
     int value;
+    PCBList* blocked;
+    //static WaitList* waitList;
 
 };
 

@@ -1,6 +1,6 @@
 #include "timer.h"
 #include "pcb.h"
-#include "scheduler.h"
+#include "schedule.h"
 
 #include <dos.h>
 #include <stdlib.h>

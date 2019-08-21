@@ -1,6 +1,8 @@
 #include "timer.h"
 #include "pcb.h"
 #include "schedule.h"
+#include "kernsem.h"
+#include "waitlist.h"
 
 #include <dos.h>
 #include <stdlib.h>
@@ -34,6 +36,7 @@ void interrupt Timer::timerInt(...) {
     if(!req){
         oldTimerInt();
         tick();
+        KernelSem::timerUpdate();
 
         if(runningPCB->remaining > 0){
             runningPCB->remaining--;
@@ -56,12 +59,13 @@ void interrupt Timer::timerInt(...) {
         runningPCB->bp = tbp;
 
         //change
-        if(runningPCB->state == PCB::RUNNING){ //&& runningPCB != idlePCB or MainPCB)
+        if(runningPCB->state == PCB::RUNNING && runningPCB != Timer::mainPCB && (runningPCB != idlePCB)){
         	runningPCB->state = PCB::READY;
             Scheduler::put(runningPCB);
         }
 
         runningPCB = Scheduler::get();
+        if(runningPCB == 0){ runningPCB = idlePCB; }
         runningPCB->state = PCB::RUNNING;
         runningPCB->remaining = runningPCB->timeSlice;
 

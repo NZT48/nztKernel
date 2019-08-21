@@ -33,7 +33,7 @@ public:
     Time remaining, timeSlice;
     State state;
 
-    unsigned* stack; ///or unsigned int
+    unsigned* stack; //or unsigned int
     StackSize stackSize;
 
     Thread* myThread;

@@ -30,7 +30,8 @@ PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
     sp = FP_OFF(stack + stackSize - 12);
     bp = FP_OFF(stack + stackSize - 12);
 
-    //Missing PCB list
+    if(myID == 1) Timer::mainPCB = this;
+    if(myID == 2) Timer::idlePCB = this;
 
     this->timeSlice = timeSlice;
     remaining = timeSlice;
@@ -46,19 +47,20 @@ PCB::~PCB(){
 }
 
 void PCB::reschedule(){
-    state = READY;
-    HARD_LOCK
-    Scheduler::put(this);
-    HARD_UNLOCK
-}
+	if(this != Timer::idlePCB){
 
+		state = READY;
+		HARD_LOCK
+		Scheduler::put(this);
+		HARD_UNLOCK
+	}
+}
 void PCB::waitToComplete(){
 
     if(this == Timer::runningPCB || this->state == FINISHED
         || this == Timer::idlePCB || this->state == NEW) return;
 
     HARD_LOCK
-    //cout << endl << Timer::runningPCB->getID() << " is waitin for " << getID() << endl;
     Timer::runningPCB->state = BLOCKED;
     blockedPCB->put(Timer::runningPCB);
     HARD_UNLOCK

@@ -2,16 +2,19 @@
 #define _PCBLIST_H_
 
 #include "pcb.h"
+#include "thread.h"
 
 class PCB;
+
 
 class PCBList {
 public:
 
     struct Node {
         PCB* pcb;
+        Time timeLeft;
         Node* next;
-        Node(PCB* pcb, Node* next = 0) : pcb(pcb), next(next) {}
+        Node(PCB* pcb, Node* next = 0, Time t = infiniteTimeSlice) : pcb(p), next(n), timeLeft(t) {}
     };
 
     PCBList();
@@ -24,10 +27,14 @@ public:
     void release();
 
     void put(PCB* pcb);
+    void PriorPut(PCB* p, Time maxTimeToWait);
     PCB* get();
+    void remove(PCB* p);
 
     Node* front;
     Node* back;
+
+    friend void timerUpdate();
 
 };
 

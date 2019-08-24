@@ -5,10 +5,6 @@
 typedef unsigned int Reg;
 extern unsigned volatile lock;
 
-
-//Timerh
-typedef int IVTNo;
-
 //locks
 #define HARD_LOCK asm pushf; \
         asm cli;

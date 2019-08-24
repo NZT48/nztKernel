@@ -56,16 +56,20 @@ int KernelSem::wait(Time maxTimeToWait) {
 
 int KernelSem::signal(int n) {
     LOCK;
+    int t = 0;
+    while( n >= 0 && value <= 0 ){
+		if(++value <= 0) {
 
-    if(++value <= 0) {
-        PCB* p = blocked->get();
-        p->reschedule();
-        p->wakeSignal = 1;
-        UNLOCK;
-        return 0;
-        }
-    } else UNLOCK;
-    return 1;
+			   PCB* p = blocked->get();
+			   p->reschedule();
+			   p->wakeSignal = 1;
+			   t++; n--;
+
+
+		}
+    }
+    UNLOCK;
+    return t;
 }
 
 void KernelSem::timerUpdate() {

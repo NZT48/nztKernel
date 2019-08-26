@@ -1,15 +1,12 @@
-#include "kernev.h"
-
 #include "ivtEntry.h"
-#include "pcb.h"
 #include "timer.h"
 
-KernelEv::KernelEv(IVTNo id1, Event* myEv) {
-    id = id1;
+KernelEv::KernelEv(IVTNo id_, Event* myEv) {
+    id = id_;
     myEvent = myEv;
     value = 1;
     myPCB = Timer::runningPCB;
-    IVTEntry::ivtEntries[id1]->setEvent(this);
+    IVTEntry::ivtEntries[id]->setEvent(this);
 }
 
 KernelEv::~KernelEv() {

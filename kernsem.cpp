@@ -1,35 +1,31 @@
 #include "kernsem.h"
-#include "pcb.h"
 #include "timer.h"
 #include "SCHEDULE.h"
-#include "waitlist.h"
 
-SemListElem* KernelSem::FirstSem = 0;
+KernelSem::SemListElem* KernelSem::FirstSem = 0;
 
-SemListElem::SemListElem(KernelSem* s, SemListElem* n) : sem(s), next(n) {}
 
 KernelSem::KernelSem(int init){
-
-    value = init;
-
+	value = init;
     blocked = new PCBList();
-
-    KernelSem::FirstSem = new SemListElem(this, KernelSem::FirstSem);
-
+    KernelSem::FirstSem = new KernelSem::SemListElem(this, KernelSem::FirstSem);
 }
 
 KernelSem::~KernelSem() {
     delete blocked;
 
     if( this == KernelSem::FirstSem->sem) {
+
         SemListElem* old = KernelSem::FirstSem;
-        KernelSem::FirstSem = KernelSem:FirstSem->next;
+        KernelSem::FirstSem = KernelSem::FirstSem->next;
+
         HARD_LOCK;
         delete old;
         HARD_UNLOCK;
-
     } else {
+
         SemListElem *prev = KernelSem::FirstSem, *cur = KernelSem::FirstSem->next;
+
         while (cur->sem != this) {
 			prev = cur;
 			cur = cur->next;
@@ -41,14 +37,15 @@ KernelSem::~KernelSem() {
 
 int KernelSem::wait(Time maxTimeToWait) {
     LOCK;
-    Timer::runningPCB->wakeSignal = 1;
+
+    Timer::runningPCB->wakeSignal = 0;
 
     if(--value < 0) {
-        Timer::runningPCB->wakeSignal = 0;
         Timer::runningPCB->state = PCB::BLOCKED;
         blocked->PriorPut(Timer::runningPCB, maxTimeToWait);
         UNLOCK;
         dispatch();
+
     } else UNLOCK;
 
     return Timer::runningPCB->wakeSignal;
@@ -57,18 +54,19 @@ int KernelSem::wait(Time maxTimeToWait) {
 int KernelSem::signal(int n) {
     LOCK;
     int t = 0;
-    while( n >= 0 && value <= 0 ){
-		if(++value <= 0) {
 
+    while( n >= 0 && value <= 0 ){
+
+		if(++value <= 0) {
 			   PCB* p = blocked->get();
 			   p->reschedule();
 			   p->wakeSignal = 1;
 			   t++; n--;
-
-
 		}
+
     }
     UNLOCK;
+
     return t;
 }
 
@@ -78,18 +76,18 @@ void KernelSem::timerUpdate() {
 
     	PCBList* q = cur->sem->blocked;
 
-        for(PCBList::Node* e = q->front; e != 0 && e->timeLeft != infiniteTimeSlice; ) {
+    	for(PCBList::Node* e = q->front; e != 0 && e->timeLeft != infiniteTimeSlice; ) {
 
-            if(--e->timeLeft == 0) {
-
-                cur->sem->value++;
-                PCB* pcb = q->get();
-                pcb->reschedule();
-                e = q->front;
-            } else {
-                e = e->next;
-            }
-        }
+    	            if(--e->timeLeft == 0) {
+    	                cur->sem->value++;
+    	                PCB* pcb = q->get();
+    	                pcb->wakeSignal = 0;
+    	                pcb->reschedule();
+    	                e = q->front;
+    	            } else {
+    	                e = e->next;
+    	            }
+    	        }
 
     }
 }

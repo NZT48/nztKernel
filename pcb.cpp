@@ -1,9 +1,9 @@
 #include <dos.h>
 
 #include "pcb.h"
-#include "pcblist.h"
-#include "SCHEDULE.H"
 #include "timer.h"
+#include "SCHEDULE.H"
+
 
 PCBList* PCB::pcbList = new PCBList();
 ID PCB::lastId = 0;
@@ -24,7 +24,7 @@ PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
     stack[stackSize - 1] = 0x200; //PSWI = 1
     stack[stackSize - 2] = FP_SEG(PCB::threadWrapper);
     stack[stackSize - 3] = FP_OFF(PCB::threadWrapper);
-    stack[stackSize - 12] = 0; //check it!
+    stack[stackSize - 12] = 0;
 
     ss = FP_SEG(stack + stackSize - 12);
     sp = FP_OFF(stack + stackSize - 12);
@@ -36,7 +36,7 @@ PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
     this->timeSlice = timeSlice;
     remaining = timeSlice;
     state = NEW;
-    wakeSignal = 0; //can also be 1
+    wakeSignal = 1;
     pcbList->put(this);
 
 }
@@ -48,13 +48,13 @@ PCB::~PCB(){
 
 void PCB::reschedule(){
 	if(this != Timer::idlePCB){
-
 		state = READY;
 		HARD_LOCK
 		Scheduler::put(this);
 		HARD_UNLOCK
 	}
 }
+
 void PCB::waitToComplete(){
 
     if(this == Timer::runningPCB || this->state == FINISHED
@@ -68,10 +68,11 @@ void PCB::waitToComplete(){
 }
 
 void PCB::threadWrapper() {
-    Timer::runningPCB->myThread->run();
 
+    Timer::runningPCB->myThread->run();
     Timer::runningPCB->blockedPCB->release();
     Timer::runningPCB->state = FINISHED;
+
     dispatch();
 }
 
@@ -86,6 +87,7 @@ ID PCB::getRunningId(){
 
 Thread *PCB::getThreadById(ID id){
     PCBList::Node* ret = pcbList->front;
+
     while( ret != 0 && ret->pcb->getID() != id){
         ret = ret->next;
     }

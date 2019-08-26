@@ -11,16 +11,15 @@ class KernelEv;
 class IVTEntry {
 
 public:
-
     IVTEntry(IVTNo ivtNo_, pInterrupt newRoutine1 );
     ~IVTEntry();
-
-    static IVTEntry* ivtEntries[256];
 
     void setEvent(KernelEv *event_);
     void signal();
     void callOldRoutine();
     void restore();
+
+    static IVTEntry* ivtEntries[256];
 
 private:
 
@@ -41,6 +40,5 @@ private:
 				ivtEntry##num.callOldRoutine();            				 \
 			dispatch();													 \
 		}
-
 
 #endif

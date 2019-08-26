@@ -1,14 +1,11 @@
 #include "dos.h"
-#include "kernev.h"
-#include "event.h"
 #include "ivtEntry.h"
 
 IVTEntry* IVTEntry::ivtEntries[256] = {0};
 
-
-IVTEntry::IVTEntry(IVTNo ivtNo_, pInterrupt newRoutine1 ){
+IVTEntry::IVTEntry(IVTNo ivtNo_, pInterrupt newRoutine_){
     ivtNo = ivtNo_;
-    newRoutine = newRoutine1;
+    newRoutine = newRoutine_;
     oldRoutine = getvect(ivtNo);
     setvect(ivtNo, newRoutine);
     event = 0;

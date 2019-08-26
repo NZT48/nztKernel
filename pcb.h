@@ -9,8 +9,8 @@ class Thread;
 class PCBList;
 
 class PCB {
-public:
 
+public:
     enum State { NEW, READY, BLOCKED, RUNNING, FINISHED };
 
     PCB();
@@ -33,13 +33,12 @@ public:
     Time remaining, timeSlice;
     State state;
 
-    unsigned* stack; //or unsigned int
+    unsigned int* stack;
     StackSize stackSize;
 
     Thread* myThread;
-    PCBList blockedPCB;
+    PCBList* blockedPCB;
 
-    //for semaphor
     int wakeSignal;
 
     Reg bp;

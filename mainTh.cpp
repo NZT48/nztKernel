@@ -3,7 +3,6 @@
 #include "SCHEDULE.H"
 
 extern int userMain(int, char*[]);
-extern PCB *mainPCB;
 
 MainThread::MainThread(int argc_, char *argv_[]): Thread(4096,0) {
     argc = argc_;

@@ -1,6 +1,8 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
+#include "pcb.h"
+
 typedef void interrupt (*InterruptRoutine)(...);
 
 
@@ -11,15 +13,14 @@ public:
     static void inic();
     static void restore();
 
-    static PCB* mainPCB;
-    static PCB* idlePCB;
-    static PCB* runningPCB;
+	static PCB* mainPCB;
+	static PCB* idlePCB;
+	static PCB* runningPCB;
 
     static int volatile req;
 
 private:
     static InterruptRoutine oldTimerInt;
-    
 };
 
 void tick();

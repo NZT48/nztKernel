@@ -11,11 +11,11 @@ const Time defaultTimeSlice = 2;
 const Time maximumTimeSlice = 65534;
 const Time infiniteTimeSlice = 65535;
 
-class PCB; //Kernel's implementaton of a user's thread
+class PCB;
 
 class Thread {
-public:
 
+public:
     void start();
     void waitToComplete();
     virtual ~Thread();
@@ -25,13 +25,13 @@ public:
     static Thread *getThreadById(ID id);
 
 protected:
-
     friend class PCB;
     Thread (StackSize stackSize = defaultStackSize, Time timeSlice = defaultTimeSlice);
     virtual void run() {}
 
 private:
     PCB* myPCB;
+
 };
 
 void dispatch();

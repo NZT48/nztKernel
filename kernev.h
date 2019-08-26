@@ -17,12 +17,11 @@ public:
     void signal();
 
 private:
-
     IVTNo id;
-    PCB* myPCB;
     volatile int value;
+
+    PCB* myPCB;
     Event* myEvent;
 };
-
 
 #endif

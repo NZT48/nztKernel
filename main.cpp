@@ -1,14 +1,15 @@
 #include "timer.h"
 #include "thread.h"
 #include "mainTh.h"
-#include <iostream.h>
 #include "pcb.h"
+#include "idle.h"
+
 
 int main(int argc, char* argv[]){
 
     Timer::mainPCB = new PCB(0, defaultStackSize, 20);
     Timer::runningPCB = Timer::mainPCB;
-    Idle* idle = new Idle();
+	Idle* idle = new Idle();
 
     MainThread *mainThread = new MainThread(argc, argv);
 

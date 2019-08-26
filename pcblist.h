@@ -6,16 +6,17 @@
 
 class PCB;
 
-
 class PCBList {
+
 public:
 
-    struct Node {
-        PCB* pcb;
-        Time timeLeft;
-        Node* next;
-        Node(PCB* pcb, Node* next = 0, Time t = infiniteTimeSlice) : pcb(p), next(n), timeLeft(t) {}
-    };
+	struct Node {
+	    PCB* pcb;
+	    Time timeLeft;
+	    Node* next;
+
+	    Node(PCB* p, Node* n = 0, Time t = infiniteTimeSlice) : pcb(p), next(n), timeLeft(t) {}
+	};
 
     PCBList();
     ~PCBList();
@@ -29,7 +30,6 @@ public:
     void put(PCB* pcb);
     void PriorPut(PCB* p, Time maxTimeToWait);
     PCB* get();
-    void remove(PCB* p);
 
     Node* front;
     Node* back;

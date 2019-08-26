@@ -1,3 +1,3 @@
 #include "defin.h"
 
-unsigned volatile lock = 0;
+unsigned volatile lockFlag = 0;

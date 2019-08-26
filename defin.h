@@ -1,18 +1,17 @@
 #ifndef _DEFIN_H_
 #define _DEFIN_H_
 
-//PCBh
-typedef unsigned int Reg;
-extern unsigned volatile lock;
+typedef unsigned int  Reg;
 
-//locks
-#define HARD_LOCK asm pushf; \
-        asm cli;
+extern unsigned volatile lockFlag;
+
+#define HARD_LOCK asm pushf;\
+    asm cli;
 
 #define HARD_UNLOCK asm popf;
 
-#define LOCK      ++lock
-#define UNLOCK    /*if (--lock == 0 && Timer::lockTimedOut) {  dispatch(); }*/ --lock;
-#define LOCKED(s) LOCK; s UNLOCK
+
+#define LOCK      ++lockFlag;
+#define UNLOCK    --lockFlag;
 
 #endif

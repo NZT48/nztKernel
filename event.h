@@ -17,6 +17,7 @@ public:
 
 protected:
     friend class KernelEv;
+
     void signal();
 
 private:

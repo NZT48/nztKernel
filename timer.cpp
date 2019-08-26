@@ -1,8 +1,6 @@
 #include "timer.h"
-#include "pcb.h"
 #include "schedule.h"
 #include "kernsem.h"
-#include "waitlist.h"
 
 #include <dos.h>
 #include <stdlib.h>
@@ -21,7 +19,6 @@ void Timer::inic() {
     HARD_LOCK
     oldTimerInt = getvect(0x08);
     setvect(0x08,timerInt);
-    //setvect(60, oldTimerInt);
     HARD_UNLOCK
 }
 
@@ -31,23 +28,22 @@ void Timer::restore() {
     HARD_UNLOCK
 }
 
-
 void interrupt Timer::timerInt(...) {
     if(!req){
+
         oldTimerInt();
         tick();
-        KernelSem::timerUpdate();
+        KernelSem::FirstSem->sem->timerUpdate();
 
         if(runningPCB->remaining > 0){
             runningPCB->remaining--;
-            /*if(runningPCB->remaining == 0 && runningPCB->timeSlice != 0)
-                runningPCB->remaining = 1;*/
+            if(runningPCB->remaining == 0 && lockFlag && runningPCB->timeSlice != 0)
+            				runningPCB->remaining = 1;
         }
     }
 
-    if(req || (runningPCB->timeSlice != 0 && runningPCB->remaining == 0)){
+    if(req || (runningPCB->timeSlice != 0 && runningPCB->remaining == 0 && !lockFlag)){
 
-        //save
         asm {
                 mov tss, ss;
                 mov tsp, sp;
@@ -58,7 +54,6 @@ void interrupt Timer::timerInt(...) {
         runningPCB->sp = tsp;
         runningPCB->bp = tbp;
 
-        //change
         if(runningPCB->state == PCB::RUNNING && runningPCB != Timer::mainPCB && (runningPCB != idlePCB)){
         	runningPCB->state = PCB::READY;
             Scheduler::put(runningPCB);
@@ -69,7 +64,6 @@ void interrupt Timer::timerInt(...) {
         runningPCB->state = PCB::RUNNING;
         runningPCB->remaining = runningPCB->timeSlice;
 
-        //restore
         tss = runningPCB->ss;
         tsp = runningPCB->sp;
         tbp = runningPCB->bp;

@@ -1,4 +1,5 @@
 #include "pcblist.h"
+#include "timer.h"
 
 PCBList::PCBList(){
     front = back = 0;
@@ -16,14 +17,15 @@ PCBList::~PCBList(){
 }
 
 void PCBList::release(){
-		for(PCB* tmp; tmp = get(); tmp->reschedule());
+		for(PCB* tmp = 0; (tmp = get()) != 0; tmp->reschedule());
 }
 
 
 void PCBList::put(PCB* pcb){
     HARD_LOCK
-        Node* node = new Node(pcb);
+        Node* node = new Node(pcb, 0);
     HARD_UNLOCK
+
 
     if(back == 0){
         front = back = node;
@@ -35,6 +37,7 @@ void PCBList::put(PCB* pcb){
 }
 
 PCB* PCBList::get(){
+
 	LOCK;
 	if (front) {
 		PCB* ret = front->pcb;
@@ -54,40 +57,38 @@ PCB* PCBList::get(){
 }
 
 
-
 void PCBList::PriorPut(PCB* p, Time maxTimeToWait) {
     LOCK;
 
-    if (maxTimeToWait == 0) {
-        maxTimeToWait = infiniteTimeSlice;
-    }
-    else if (maxTimeToWait > maximumTimeSlice) {
-        maxTimeToWait = maximumTimeSlice;
-    }
+	if (maxTimeToWait == 0) {
+	        maxTimeToWait = infiniteTimeSlice;
+	    }
+	    else if (maxTimeToWait > maximumTimeSlice) {
+	        maxTimeToWait = maximumTimeSlice;
+	    }
 
-    if (front == 0) {
-		front = back = new Node(p, 0, maxTimeToWait);
-	} else {
-        Node *prev = 0, *cur = front;
+	    if (front == 0) {
+			front = back = new Node(p, 0, maxTimeToWait);
+		} else {
+	        Node *prev = 0, *cur = front;
 
-        while(cur != 0 && maxTimeToWait > cur->timeLeft){
-            prev = cur;
-            cur = cur->next;
-        }
+	        while(cur != 0 && maxTimeToWait > cur->timeLeft){
+	            prev = cur;
+	            cur = cur->next;
+	        }
 
-        if (prev == 0) {	// umetanje na pocetak prioritetnog reda
-            front = new Node(p, front, maxTimeToWait);
-        }
-        else if (cur == 0) {	// umetanje na kraj prioritetnog reda
-            Node* newElem = new Node(p, 0, maxTimeToWait);
-            back->next = newElem;
-            back = newElem;
-        }
-        else {		// umetanje u sredinu prioritetnog reda
-            prev->next = new Node(p, cur, maxTimeToWait);
-        }
-
-    }
+	        if (prev == 0) {	// umetanje na pocetak prioritetnog reda
+	            front = new Node(p, front, maxTimeToWait);
+	        }
+	        else if (cur == 0) {	// umetanje na kraj prioritetnog reda
+	            Node* newElem = new Node(p, 0, maxTimeToWait);
+	            back->next = newElem;
+	            back = newElem;
+	        }
+	        else {		// umetanje u sredinu prioritetnog reda
+	            prev->next = new Node(p, cur, maxTimeToWait);
+	        }
+		}
 
     UNLOCK;
 }

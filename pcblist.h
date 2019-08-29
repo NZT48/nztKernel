@@ -18,7 +18,7 @@ public:
 	    Node(PCB* p, Node* n = 0, Time t = infiniteTimeSlice) : pcb(p), next(n), timeLeft(t) {}
 	};
 
-    PCBList();
+    PCBList(): front(0), back(0) {}
     ~PCBList();
 
     PCB* head() const { return front->pcb; }
@@ -28,14 +28,13 @@ public:
     void release();
 
     void put(PCB* pcb);
-    void PriorPut(PCB* p, Time maxTimeToWait);
     PCB* get();
+    void PriorPut(PCB* p, Time maxTimeToWait);
 
     Node* front;
     Node* back;
 
     friend void timerUpdate();
-
 };
 
 #endif

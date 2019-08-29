@@ -5,11 +5,12 @@ IVTEntry* IVTEntry::ivtEntries[256] = {0};
 
 IVTEntry::IVTEntry(IVTNo ivtNo_, pInterrupt newRoutine_){
     ivtNo = ivtNo_;
+    event = 0;
+    ivtEntries[ivtNo] = this;
+
     newRoutine = newRoutine_;
     oldRoutine = getvect(ivtNo);
     setvect(ivtNo, newRoutine);
-    event = 0;
-    ivtEntries[ivtNo] = this;
 }
 
 void IVTEntry::restore() {

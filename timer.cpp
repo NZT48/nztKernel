@@ -1,6 +1,7 @@
 #include "timer.h"
 #include "schedule.h"
 #include "kernsem.h"
+#include "pcb.h"
 
 #include <dos.h>
 #include <stdlib.h>
@@ -29,6 +30,7 @@ void Timer::restore() {
 }
 
 void interrupt Timer::timerInt(...) {
+
     if(!req){
 
         oldTimerInt();
@@ -53,6 +55,7 @@ void interrupt Timer::timerInt(...) {
         runningPCB->ss = tss;
         runningPCB->sp = tsp;
         runningPCB->bp = tbp;
+        runningPCB->savedLock = lockFlag;
 
         if(runningPCB->state == PCB::RUNNING && runningPCB != Timer::mainPCB && (runningPCB != idlePCB)){
         	runningPCB->state = PCB::READY;
@@ -67,6 +70,7 @@ void interrupt Timer::timerInt(...) {
         tss = runningPCB->ss;
         tsp = runningPCB->sp;
         tbp = runningPCB->bp;
+		lockFlag = runningPCB->savedLock;
 
         asm {
             mov ss, tss;
@@ -75,5 +79,14 @@ void interrupt Timer::timerInt(...) {
         }
 
         req = 0;
+
+		LOCK;
+        asm sti;
+        int sig = runningPCB->signalList->get();
+        for(; sig != -1; sig = runningPCB->signalList->get()){
+            runningPCB->serve(sig);
+        }
+        asm cli;
+        UNLOCK;
     }
 }

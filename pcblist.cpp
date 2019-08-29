@@ -1,9 +1,6 @@
 #include "pcblist.h"
 #include "timer.h"
 
-PCBList::PCBList(){
-    front = back = 0;
-}
 
 PCBList::~PCBList(){
 	HARD_LOCK
@@ -77,15 +74,15 @@ void PCBList::PriorPut(PCB* p, Time maxTimeToWait) {
 	            cur = cur->next;
 	        }
 
-	        if (prev == 0) {	// umetanje na pocetak prioritetnog reda
+	        if (prev == 0) {
 	            front = new Node(p, front, maxTimeToWait);
 	        }
-	        else if (cur == 0) {	// umetanje na kraj prioritetnog reda
+	        else if (cur == 0) {
 	            Node* newElem = new Node(p, 0, maxTimeToWait);
 	            back->next = newElem;
 	            back = newElem;
 	        }
-	        else {		// umetanje u sredinu prioritetnog reda
+	        else {
 	            prev->next = new Node(p, cur, maxTimeToWait);
 	        }
 		}

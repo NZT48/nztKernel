@@ -8,6 +8,9 @@
 PCBList* PCB::pcbList = new PCBList();
 ID PCB::lastId = 0;
 
+volatile int PCB::globallyBlockedSignals[16] = {0};
+
+
 PCB::PCB(){
     timeSlice = remaining = 20;
 }
@@ -39,6 +42,25 @@ PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
     wakeSignal = 1;
     pcbList->put(this);
 
+    savedLock = 0;
+    parentPCB = Timer::runningPCB;
+    signalList = new SignalList();
+
+    if(myID > 1){
+    	for(int i = 0; i < 16; i++){
+    		PCB::HandlerList::HandlerElem* tmp = parentPCB->handlers[i].head;
+    		while(tmp){
+    			handlers[i].put(tmp->handler);
+    			tmp = tmp->next;
+   			}
+   			if(parentPCB->myID == 1)
+   				blockedSignals[i] = 0;
+   			else
+   				blockedSignals[i] = parentPCB->blockedSignals[i];
+    	}
+    } else {
+    	handlers[0].put(signal0);
+    }
 }
 
 PCB::~PCB(){
@@ -49,9 +71,7 @@ PCB::~PCB(){
 void PCB::reschedule(){
 	if(this != Timer::idlePCB){
 		state = READY;
-		HARD_LOCK
 		Scheduler::put(this);
-		HARD_UNLOCK
 	}
 }
 
@@ -70,7 +90,10 @@ void PCB::waitToComplete(){
 void PCB::threadWrapper() {
 
     Timer::runningPCB->myThread->run();
+
+    Timer::runningPCB->serve(2);
     Timer::runningPCB->blockedPCB->release();
+    Timer::runningPCB->parentPCB->signal(1);
     Timer::runningPCB->state = FINISHED;
 
     dispatch();
@@ -96,4 +119,123 @@ Thread *PCB::getThreadById(ID id){
         return ret->pcb->myThread;
     else
         return 0;
+}
+
+void PCB::signal(SignalId signal){
+    if(signal > 15) return;
+    signalList->put(signal);
+}
+
+
+void PCB::registerHandler(SignalId signal, SignalHandler handler){
+	if(signal > 15) return;
+    LOCK;
+        handlers[signal].put(handler);
+    UNLOCK;
+}
+
+void PCB::unregisterAllHandlers(SignalId id){
+	if(id > 15) return;
+    LOCK;
+        handlers[id].removeAll();
+    UNLOCK;
+}
+
+void PCB::swap(SignalId id, SignalHandler hand1, SignalHandler hand2){
+	if(id > 15) return;
+    HandlerList::HandlerElem *tmp = handlers[id].head, *first = 0, *second = 0;
+	while(tmp){
+		if(tmp->handler == hand1)
+			first = tmp;
+		else if(tmp->handler == hand2)
+			second = tmp;
+		if(first && second){
+			SignalHandler tmp2 = first->handler;
+			first->handler = second->handler;
+			second->handler = tmp2;
+			break;
+		}
+		tmp = tmp->next;
+	}
+}
+
+
+void PCB::blockSignal(SignalId signal){
+	if(signal > 15) return;
+    LOCK;
+        blockedSignals[signal] = 1;
+    UNLOCK;
+}
+
+void PCB::blockSignalGlobally(SignalId signal){
+	if(signal > 15) return;
+    LOCK;
+        PCB::globallyBlockedSignals[signal] = 1;
+    UNLOCK;
+}
+
+void PCB::unblockSignal(SignalId signal){
+	if(signal > 15) return;
+    LOCK;
+        blockedSignals[signal] = 0;
+    UNLOCK;
+}
+
+void PCB::unblockSignalGlobally(SignalId signal){
+	if(signal > 15) return;
+    LOCK;
+        PCB::globallyBlockedSignals[signal] = 0;
+    UNLOCK;
+}
+
+void PCB::serve(SignalId signal){
+	if(signal > 15) return;
+	PCB::HandlerList::HandlerElem* tmp = handlers[signal].head;
+	while(tmp){
+		tmp->handler();
+		tmp = tmp->next;
+	}
+}
+
+void PCB::signal0(){
+	HARD_LOCK;
+	Timer::runningPCB->state = PCB::FINISHED;
+	Timer::runningPCB->blockedPCB->release();
+	Timer::runningPCB->parentPCB->signal(1);
+	HARD_UNLOCK;
+	dispatch();
+
+}
+
+
+PCB::HandlerList::~HandlerList(){
+    LOCK;
+    HandlerList::HandlerElem* tmp;
+	while(head){
+		tmp = head;
+		head = head->next;
+		delete tmp;
+	}
+    UNLOCK;
+}
+
+void PCB::HandlerList::put(SignalHandler hand){
+    HandlerElem* tmp = new HandlerElem(hand);
+    if(head)
+        tail->next = tmp;
+    else
+        head = tmp;
+    tail = tmp;
+}
+
+void PCB::HandlerList::removeAll(){
+    HandlerElem *cur = head, *tmp;
+	while(cur){
+		tmp = cur;
+		cur = cur->next;
+		HARD_LOCK;
+			delete tmp;
+		HARD_UNLOCK;
+	}
+	head = tail = 0;
 }

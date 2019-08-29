@@ -12,7 +12,9 @@ KernelSem::KernelSem(int init){
 }
 
 KernelSem::~KernelSem() {
+	HARD_LOCK;
     delete blocked;
+    HARD_UNLOCK;
 
     if( this == KernelSem::FirstSem->sem) {
 
@@ -22,6 +24,7 @@ KernelSem::~KernelSem() {
         HARD_LOCK;
         delete old;
         HARD_UNLOCK;
+
     } else {
 
         SemListElem *prev = KernelSem::FirstSem, *cur = KernelSem::FirstSem->next;
@@ -31,7 +34,10 @@ KernelSem::~KernelSem() {
 			cur = cur->next;
 		}
 		prev->next = cur->next;
+
+		HARD_LOCK;
 		delete cur;
+		HARD_UNLOCK;
     }
 }
 
@@ -53,18 +59,22 @@ int KernelSem::wait(Time maxTimeToWait) {
 
 int KernelSem::signal(int n) {
     LOCK;
-    int t = 0;
 
-    while( n >= 0 && value <= 0 ){
-
-		if(++value <= 0) {
-			   PCB* p = blocked->get();
-			   p->reschedule();
-			   p->wakeSignal = 1;
-			   t++; n--;
-		}
-
+    if (n < 0 ) {
+    	UNLOCK;
+    	return n;
     }
+
+    int t = 0;
+    if ( n == 0 ) { n = 1; }
+
+    while( n > 0 && value <= 0 ){
+		++value;
+		PCB* p = blocked->get();
+		p->reschedule();
+		p->wakeSignal = 1;
+		t++; n--;
+	}
     UNLOCK;
 
     return t;
@@ -78,16 +88,15 @@ void KernelSem::timerUpdate() {
 
     	for(PCBList::Node* e = q->front; e != 0 && e->timeLeft != infiniteTimeSlice; ) {
 
-    	            if(--e->timeLeft == 0) {
-    	                cur->sem->value++;
-    	                PCB* pcb = q->get();
-    	                pcb->wakeSignal = 0;
-    	                pcb->reschedule();
-    	                e = q->front;
-    	            } else {
-    	                e = e->next;
-    	            }
-    	        }
-
+    		if(--e->timeLeft == 0) {
+    			cur->sem->value++;
+    			PCB* pcb = q->get();
+    			pcb->wakeSignal = 0;
+    			pcb->reschedule();
+    			e = q->front;
+    		} else {
+    			e = e->next;
+    	    }
+    	}
     }
 }

@@ -24,12 +24,12 @@ void PCBList::put(PCB* pcb){
     HARD_UNLOCK
 
 
-    if(back == 0){
-        front = back = node;
-    } else {
+    if(front){
         back->next = node;
-        back = node;
+    } else {
+        front = node;
     }
+    back = node;
 
 }
 

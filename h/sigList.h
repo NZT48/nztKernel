@@ -1,5 +1,5 @@
-#ifndef _SignalList_H_
-#define _SignalList_H_
+#ifndef _SIGLIST_H_
+#define _SIGLIST_H_
 
 #include "defin.h"
 #include "thread.h"

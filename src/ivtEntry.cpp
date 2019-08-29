@@ -9,12 +9,16 @@ IVTEntry::IVTEntry(IVTNo ivtNo_, pInterrupt newRoutine_){
     ivtEntries[ivtNo] = this;
 
     newRoutine = newRoutine_;
+    HARD_LOCK;
     oldRoutine = getvect(ivtNo);
     setvect(ivtNo, newRoutine);
+    HARD_UNLOCK;
 }
 
 void IVTEntry::restore() {
+	HARD_LOCK;
     setvect(ivtNo, oldRoutine);
+    HARD_UNLOCK;
     event = 0;
 }
 

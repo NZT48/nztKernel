@@ -1,5 +1,5 @@
-#ifndef _event_h_
-#define _event_h_
+#ifndef _EVENT_H_
+#define _EVENT_H_
 
 typedef unsigned char IVTNo;
 

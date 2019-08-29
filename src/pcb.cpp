@@ -42,7 +42,7 @@ PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
     wakeSignal = 1;
     pcbList->put(this);
 
-    savedLock = 0;
+    sLock = 0;
     parentPCB = Timer::runningPCB;
     signalList = new SignalList();
 
@@ -65,6 +65,8 @@ PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
 
 PCB::~PCB(){
     blockedPCB->release();
+    delete blockedPCB;
+    delete signalList;
     if(stack) delete[] stack;
 }
 
@@ -91,9 +93,9 @@ void PCB::threadWrapper() {
 
     Timer::runningPCB->myThread->run();
 
-    Timer::runningPCB->serve(2);
     Timer::runningPCB->blockedPCB->release();
     Timer::runningPCB->parentPCB->signal(1);
+    Timer::runningPCB->serve(2);
     Timer::runningPCB->state = FINISHED;
 
     dispatch();

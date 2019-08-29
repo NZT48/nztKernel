@@ -63,7 +63,7 @@ public:
     static void signal0();
 
     PCB* parentPCB;
-    volatile unsigned savedLock;
+    volatile unsigned sLock;
 
     SignalList *signalList;
     volatile unsigned blockedSignals[16];

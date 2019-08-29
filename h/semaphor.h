@@ -1,5 +1,5 @@
-#ifndef _semaphor_h_
-#define _semaphor_h_
+#ifndef _SEMAPHOR_H_
+#define _SEMAPHOR_H_
 
 typedef unsigned int Time;
 

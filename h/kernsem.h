@@ -1,5 +1,5 @@
-#ifndef _kernsem_h_
-#define _kernsem_h_
+#ifndef _KERNSEM_H_
+#define _KERNSEM_H_
 
 #include "defin.h"
 #include "semaphor.h"

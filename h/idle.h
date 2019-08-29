@@ -1,5 +1,5 @@
-#ifndef _idle_h_
-#define _idle_h_
+#ifndef _IDLE_H_
+#define _IDLE_H_
 
 #include "thread.h"
 
@@ -12,4 +12,4 @@ public:
 
 };
 
-#endif _idle_h_
+#endif

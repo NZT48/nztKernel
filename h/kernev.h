@@ -1,5 +1,5 @@
-#ifndef _kernev_h_
-#define _kernev_h_
+#ifndef _KERNEV_H_
+#define _KERNEV_H_
 
 #include "event.h"
 #include "pcb.h"

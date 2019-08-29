@@ -1,5 +1,5 @@
-#ifndef _ivtentry_h_
-#define _ivtentry_h_
+#ifndef _IVTENTRY_H_
+#define _IVTENTRY_H_
 
 #include "event.h"
 #include "kernev.h"

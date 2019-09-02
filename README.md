@@ -6,7 +6,6 @@ An implementation of small preemptive operating system kernel on 8086 processor.
 ### Useful links:
 -------------
 * [Operating systems class website](http://os.etf.bg.ac.rs/)
-* [Class project website] (http://os.etf.bg.ac.rs/OS1/projekat.htm)
 
 ### Structure of project:
 

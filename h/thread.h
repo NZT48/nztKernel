@@ -3,11 +3,11 @@
 
 typedef int ID;
 typedef unsigned long StackSize;
-typedef unsigned int Time; //time, x55ms
+typedef unsigned int Time; /* time, x55ms */
 const StackSize defaultStackSize = 4096;
 const StackSize maxStackSize = 1UL << 16;
 
-const Time defaultTimeSlice = 2;
+const Time defaultTimeSlice = 2; /* default = 2 * 55ms */
 const Time maximumTimeSlice = 65534;
 const Time infiniteTimeSlice = 65535;
 
@@ -15,7 +15,7 @@ typedef void (*SignalHandler) ();
 
 typedef unsigned SignalId;
 
-class PCB;
+class PCB; /* Kernel's implementation of a user's thread */
 
 class Thread {
 

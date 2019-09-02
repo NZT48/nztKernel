@@ -18,7 +18,7 @@ public:
 protected:
     friend class KernelEv;
 
-    void signal();
+    void signal(); /* Called from IVTEntry class (interrupt routine) */
 
 private:
     KernelEv* myImpl;

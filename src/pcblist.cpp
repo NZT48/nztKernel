@@ -1,4 +1,4 @@
-#include "pcblist.h"
+#include "pcbList.h"
 #include "timer.h"
 
 
@@ -19,10 +19,7 @@ void PCBList::release(){
 
 
 void PCBList::put(PCB* pcb){
-    HARD_LOCK
-        Node* node = new Node(pcb, 0);
-    HARD_UNLOCK
-
+    Node* node = new Node(pcb, 0);
 
     if(front){
         back->next = node;
@@ -34,8 +31,8 @@ void PCBList::put(PCB* pcb){
 }
 
 PCB* PCBList::get(){
-
 	LOCK;
+
 	if (front) {
 		PCB* ret = front->pcb;
 		Node* old = front;
@@ -44,9 +41,11 @@ PCB* PCBList::get(){
 			back = 0;
 		}
 		UNLOCK;
+
 		HARD_LOCK;
 		delete old;
 		HARD_UNLOCK;
+
 		return ret;
 	}
 	UNLOCK;
@@ -59,33 +58,33 @@ void PCBList::PriorPut(PCB* p, Time maxTimeToWait) {
 
 	if (maxTimeToWait == 0) {
 	        maxTimeToWait = infiniteTimeSlice;
-	    }
-	    else if (maxTimeToWait > maximumTimeSlice) {
-	        maxTimeToWait = maximumTimeSlice;
-	    }
+	}
+	else if (maxTimeToWait > maximumTimeSlice) {
+		maxTimeToWait = maximumTimeSlice;
+	}
 
-	    if (front == 0) {
-			front = back = new Node(p, 0, maxTimeToWait);
-		} else {
-	        Node *prev = 0, *cur = front;
+	if (front == 0) {
+		front = back = new Node(p, 0, maxTimeToWait);
+	} else {
+		Node *prev = 0, *cur = front;
 
-	        while(cur != 0 && maxTimeToWait > cur->timeLeft){
-	            prev = cur;
-	            cur = cur->next;
-	        }
-
-	        if (prev == 0) {
-	            front = new Node(p, front, maxTimeToWait);
-	        }
-	        else if (cur == 0) {
-	            Node* newElem = new Node(p, 0, maxTimeToWait);
-	            back->next = newElem;
-	            back = newElem;
-	        }
-	        else {
-	            prev->next = new Node(p, cur, maxTimeToWait);
-	        }
+		while(cur != 0 && maxTimeToWait > cur->timeLeft){
+			prev = cur;
+			cur = cur->next;
 		}
 
-    UNLOCK;
+		if (prev == 0) { /* Adding to start of list */
+			front = new Node(p, front, maxTimeToWait);
+		}
+		else if (cur == 0) { /* Adding to end of list */
+			Node* newElem = new Node(p, 0, maxTimeToWait);
+			back->next = newElem;
+			back = newElem;
+		}
+		else { /* Adding between two nodes */
+			prev->next = new Node(p, cur, maxTimeToWait);
+		}
+	}
+
+	UNLOCK;
 }

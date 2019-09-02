@@ -20,7 +20,7 @@ public:
     ~SignalList();
 
     void put(SignalId id);
-    SignalId get();
+    SignalId get(); /* Get the first in the list */
     void remove(SignalElem* e);
 
     SignalElem* head;

@@ -25,16 +25,16 @@ public:
     PCB* tail() const { return back->pcb; }
 
     unsigned int empty() { return !front ? 0 : 1; }
-    void release();
+    void release(); /* Empty the list */
 
     void put(PCB* pcb);
     PCB* get();
-    void PriorPut(PCB* p, Time maxTimeToWait);
+    void PriorPut(PCB* p, Time maxTimeToWait); /* Put with priority in front PCBs with smaller time */
 
     Node* front;
     Node* back;
 
-    friend void timerUpdate();
+    friend void timerUpdate(); /* Method that decrements timeLeft */
 };
 
 #endif

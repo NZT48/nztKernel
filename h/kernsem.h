@@ -4,7 +4,7 @@
 #include "defin.h"
 #include "semaphor.h"
 #include "pcb.h"
-#include "pcblist.h"
+#include "pcbList.h"
 
 class KernelSem {
 
@@ -23,15 +23,15 @@ public:
     int wait(Time maxTimeToWait);
     int signal(int n);
 
-    void timerUpdate();
+    void timerUpdate(); /* Decrements timeLeft on every blocked thread */
 
     int val() const { return value; }
 
 private:
     int value;
-    PCBList* blocked;
+    PCBList* blocked; /* List of threads waiting on semaphore */
 
-    static SemListElem* FirstSem;
+    static SemListElem* FirstSem; /* List of all semaphores */
 
     friend class Timer;
 };

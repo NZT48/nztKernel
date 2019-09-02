@@ -17,7 +17,7 @@ public:
     void setEvent(KernelEv *event_);
     void signal();
     void callOldRoutine();
-    void restore();
+    void restore(); /* Restore the old routine at the end */
 
     static IVTEntry* ivtEntries[256];
 
@@ -29,6 +29,8 @@ private:
     pInterrupt oldRoutine;
     pInterrupt newRoutine;
 };
+
+/* Macro used for creating IVTEntry object and setting up new interrupt in IV Table */
 
 #define PREPAREENTRY(num,callOldRout)                                    \
 		void interrupt newRout##num(...);                                \

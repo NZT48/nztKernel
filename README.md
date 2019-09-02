@@ -1,5 +1,14 @@
 # MiniKernel
-## Project for course Operating Systems 1, School of Electrical Engineering, University of Belgrade
+### Project for course Operating Systems 1, School of Electrical Engineering, University of Belgrade
+
+An implementation of small preemptive operating system kernel on 8086 processor.
+
+### Useful links:
+-------------
+* [Operating systems class website](http://os.etf.bg.ac.rs/)
+* [Class project website] (http://os.etf.bg.ac.rs/OS1/projekat.htm)
+
+### Structure of project:
 
 ```
 .
@@ -13,13 +22,13 @@
 │   ├── mainTh.h
 │   ├── pcb.h
 │   ├── pcblist.h
-│   ├── SCHEDULE.H
+│   ├── schedule.h
 │   ├── semaphor.h
 │   ├── sigList.h
 │   ├── thread.h
 │   └── timer.h
 ├── lib                     # libraries
-│   └── APPLICAT.LIB
+│   └── applicat.lib
 ├── src                     # sources (.cpp files)
 │   ├── defin.cpp
 │   ├── event.cpp
@@ -35,15 +44,16 @@
 │   ├── sigList.cpp
 │   ├── thread.cpp
 │   └── timer.cpp
-├── test					# public test
+├── test                    # public test
 │   ├── bounded.cpp
 │   ├── bounded.h
 │   ├── intLock.cpp
 │   ├── intLock.h
 │   ├── keyevent.cpp
 │   ├── keyevent.h
-│   ├── USER.CPP
+│   ├── user.cpp
 │   └── user.h
+├── Projektni zadatak 2019.pdf
 └── README.md
 
 ```

@@ -1,8 +1,8 @@
 #include <dos.h>
 
 #include "pcb.h"
+#include "schedule.h"
 #include "timer.h"
-#include "SCHEDULE.H"
 
 
 PCBList* PCB::pcbList = new PCBList();
@@ -10,10 +10,6 @@ ID PCB::lastId = 0;
 
 volatile int PCB::globallyBlockedSignals[16] = {0};
 
-
-PCB::PCB(){
-    timeSlice = remaining = 20;
-}
 
 PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
 
@@ -24,16 +20,14 @@ PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
     this->stackSize = stackSize / sizeof(unsigned);
     stack = new unsigned int[stackSize];
 
-    stack[stackSize - 1] = 0x200; //PSWI = 1
-    stack[stackSize - 2] = FP_SEG(PCB::threadWrapper);
-    stack[stackSize - 3] = FP_OFF(PCB::threadWrapper);
-    stack[stackSize - 12] = 0;
+    stack[stackSize - 1] = 0x200; /* PSWI = 1 */
+    stack[stackSize - 2] = FP_SEG(PCB::threadWrapper); /* Code segment */
+    stack[stackSize - 3] = FP_OFF(PCB::threadWrapper); /* Instruction pointer */
 
     ss = FP_SEG(stack + stackSize - 12);
     sp = FP_OFF(stack + stackSize - 12);
     bp = FP_OFF(stack + stackSize - 12);
 
-    if(myID == 1) Timer::mainPCB = this;
     if(myID == 2) Timer::idlePCB = this;
 
     this->timeSlice = timeSlice;
@@ -41,6 +35,8 @@ PCB::PCB (Thread *thread, StackSize stackSize, Time timeSlice){
     state = NEW;
     wakeSignal = 1;
     pcbList->put(this);
+
+    /* Implementation for signal */
 
     sLock = 0;
     parentPCB = Timer::runningPCB;
@@ -199,6 +195,7 @@ void PCB::serve(SignalId signal){
 	}
 }
 
+/* Kill signal */
 void PCB::signal0(){
 	HARD_LOCK;
 	Timer::runningPCB->state = PCB::FINISHED;

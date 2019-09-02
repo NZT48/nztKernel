@@ -37,7 +37,7 @@ SignalId SignalList::get(){
 			return ret;
 		}
 	}
-	return -1;
+	return -1; /* There are no more signals */
 }
 
 void SignalList::remove(SignalElem* e){

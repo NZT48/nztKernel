@@ -10,19 +10,19 @@ class Timer {
 
 public:
     static void interrupt timerInt(...);
-    static void inic();
-    static void restore();
+    static void inic(); /* Change interrupt routines */
+    static void restore(); /* Restore old interrupt routine at the end */
 
 	static PCB* mainPCB;
 	static PCB* idlePCB;
 	static PCB* runningPCB;
 
-    static int volatile req;
+    static int volatile req; /* Request indicator - for explicit change of context */
 
 private:
     static InterruptRoutine oldTimerInt;
 };
 
-void tick();
+void tick(); /* Used in test, doing nothing */
 
 #endif

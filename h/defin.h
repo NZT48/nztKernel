@@ -10,6 +10,7 @@ extern unsigned volatile lockFlag;
 
 #define HARD_UNLOCK asm popf;
 
+/* Soft lock */
 #define LOCK      ++lockFlag;
 #define UNLOCK    --lockFlag;
 

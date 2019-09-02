@@ -11,7 +11,7 @@ Thread::Thread(StackSize stackSize, Time timeSlice){
 }
 
 Thread::~Thread(){
-    waitToComplete();
+    myPCB->waitToComplete();
     HARD_LOCK
     delete myPCB;
     HARD_UNLOCK
@@ -72,7 +72,7 @@ void Thread::unblockSignalGlobally(SignalId signal){
 
 void dispatch(){
     HARD_LOCK
-    Timer::req = 1;
+    Timer::req = 1; /*Requested interrupt */
     Timer::timerInt();
     HARD_UNLOCK
 }

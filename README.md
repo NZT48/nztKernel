@@ -1,4 +1,4 @@
-# MiniKernel
+# nztKernel
 ### Project for course Operating Systems 1, School of Electrical Engineering, University of Belgrade
 
 An implementation of small preemptive operating system kernel on 8086 processor.
